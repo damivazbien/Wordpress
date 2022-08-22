@@ -29,11 +29,8 @@ Paste this function on your function.php on your theme Wordpress. Function creat
 
 ## Suport documentation
 
-Hubpost -->
-https://developers.hubspot.com/docs/api/crm/contacts
+[Hubpost](https://developers.hubspot.com/docs/api/crm/contacts)
 
-Coupons Feed Meta --> https://docs.gravityforms.com/coupons-feed-meta/
+[Coupons Feed Meta](https://docs.gravityforms.com/coupons-feed-meta/)
 
-
-## License
-[MIT](https://choosealicense.com/licenses/mit/)
+[WP-Plugin](https://wetopi.com/how-to-run-a-cron-job-with-wordpress/)
