@@ -91,13 +91,15 @@ function create_coupon_gf($arg=array()){
 add_action('gform_after_submission', 'create_coupon_gf_blog', 10, 2);
 
 function create_coupon_gf_blog($entry, $form){
-	//define variables
+	
+    //define variables
 	$url = 'https://api.hubapi.com/crm/v3/objects/contacts/search';
     $url_update = 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update';
     $customers_to_search = array();
 	$filters_properties = array();
     $customer_to_update = array();
-	$myhstoken = 'Bearer pat-eu1-ddaee549-24a1-4d0c-9410-9211e41252ed';
+	$myhstoken = 'myTokenHS';
+
     //calculate dates. Start today adding more days using arg.
     $startdt = date('d/m/y');
     $endDt = date('d/m/y', strtotime(date('Y-m-d H:i:s')) + (7 * 60 * 60 * 24));
@@ -152,7 +154,7 @@ function create_coupon_gf_blog($entry, $form){
 	}
 	
 	$args = array('timeout'=> 45,'redirection' => 5, 
-								    'headers'     => array('authorization' => 'Bearer pat-eu1-ddaee549-24a1-4d0c-9410-9211e41252ed',
+								    'headers'     => array('authorization' => $myhstoken,
 													   'content-type'=> 'application/json'),
 								    'body'        => json_encode(array('inputs'=>$customer_to_update))
 								);
