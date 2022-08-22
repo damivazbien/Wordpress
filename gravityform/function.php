@@ -58,7 +58,7 @@ function create_coupon_gf($arg=array()){
 				$form_id = $meta['form_id'] ? $meta['form_id'] : 0;
 				gf_coupons()->insert_feed($form_id, true, $meta);
 				
-				array_push($customers_to_update, array('id'=>$id, 'properties'=>array($arg['cupon']=>$couponnew)));
+				array_push($customers_to_update, array('id'=>$id, 'properties'=>array($arg['coupon']=>$couponnew)));
 			}
 		} 
 		
