@@ -107,7 +107,7 @@ function create_coupon_gf_blog($entry, $form){
     $customers_to_search = array();
 	$filters_properties = array();
     $customer_to_update = array();
-	$myhstoken = 'Bearer pat-eu1-ddaee549-24a1-4d0c-9410-9211e41252ed';
+	$myhstoken = 'APIKEY';
 
     //calculate dates. Start today adding more days using arg.
     $startdt = date('Y-m-d');
@@ -117,7 +117,7 @@ function create_coupon_gf_blog($entry, $form){
 	
 				$meta = array(
 					'gravityForm' => 24,
-					'couponName' => 'test203',
+					'couponName' => 'COUPON_BLOG',
 					'couponCode' => $couponnew,
 					'couponAmountType' => 'percentage',
 					'couponAmount'=> 1,

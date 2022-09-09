@@ -12,14 +12,14 @@ Paste this function on your function.php on your theme Wordpress. Function creat
 [{
     "token": "YOURHUBSPOTTOKENAPI",
     "lifecycle_stage": "opportunity",
-    "couponname": "test103",
+    "couponname": "COUPON_NUTRICION",
     "couponamounttype": "percentage",
     "couponamount": 1,
     "enddate":3,
     "usagelimit": "1",
     "isstackable": false,
-    "usagecount": 2,
-    "gfnumber": 23,
+    "usagecount": 0,
+    "gfnumber": "ID OF FORM TO APPLY DESCOUNT -> STR",
     "limit_query": 100,
     "filter_properties": "lifecyclestage", 
     "coupon": "cupon_nutricion"
