@@ -19,7 +19,11 @@ function generateRandomString($length = 8) {
 // create coupon for customer in x life cycle.
 function create_coupon_gf($arg=array()){
 	
-	// call hubspot
+    //calculate dates. Start today adding more days using arg.
+    $startdt = date('Y-m-d');
+    $endDt = date('Y-m-d', strtotime(date('Y-m-d H:i:s')) + (7 * 60 * 60 * 24));
+	
+	// call hubspot// call hubspot
 	$response = wp_remote_get('https://api.hubapi.com/crm/v3/objects/contacts?limit=' . '' . $arg['limit_query'] . '' . '&archived=false&properties=' . '' . $arg['filter_properties'], 
 							  array('headers' => array('authorization' => $arg['token'])));
     
@@ -32,12 +36,6 @@ function create_coupon_gf($arg=array()){
 	$customers_to_update = array();
 	
 	if(! empty($data)){
-		
-		//calculate dates. Start today adding more days using arg.
-		$startdt = date('d/m/y');
-		$endDt = date('d/m/y', strtotime(date('Y-m-d H:i:s')) + ($arg['enddate'] * 60 * 60 * 24));
-		
-		
 		foreach( $data->results as $contact ) {
 			$id = $contact->id;
 			if($contact->properties->lifecyclestage == $arg['lifecycle_stage']){
@@ -58,21 +56,30 @@ function create_coupon_gf($arg=array()){
 				$form_id = $meta['form_id'] ? $meta['form_id'] : 0;
 				gf_coupons()->insert_feed($form_id, true, $meta);
 				
-				array_push($customers_to_update, array('id'=>$id, 'properties'=>array($arg['cupon']=>$couponnew)));
+				array_push($customers_to_update, array('id'=>$id, 'properties'=>array($arg['coupon']=>$couponnew)));
 			}
 		} 
 		
-		$url = 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update';
-		$args = array(
-								    'timeout'     => 45,
-									'redirection' => 5, 
-								    'headers'     => array('authorization' => $arg['token'],
-													   'content-type'=> 'application/json'),
-								    'body'        => json_encode(array('inputs'=>$customers_to_update))
-								);
+		//batch has a limit of 10, chuck array
+		$splitarraycustomer = array_chunk($customers_to_update, 9);
+		$str = print_r ($splitarraycustomer, true);
+    	echo $str;
 		
-		//insert code in HB
-		$response = wp_remote_post($url, $args);
+		
+		foreach( $splitarraycustomer as $update ) {
+		
+			$url = 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update';
+			$args = array(
+										'timeout'     => 45,
+										'redirection' => 5, 
+										'headers'     => array('authorization' => $arg['token'],
+														   'content-type'=> 'application/json'),
+										'body'        => json_encode(array('inputs'=>$update))
+									);
+
+			//insert code in HB
+			$response = wp_remote_post($url, $args);
+		}
 		
 		// error check
 		if ( is_wp_error( $response ) ) {
@@ -84,11 +91,13 @@ function create_coupon_gf($arg=array()){
 		   print_r( $response );
 		   echo '</pre>';
 		}
-	}	
+	}
+		
 }
 
 //after send a form, create coupon
-add_action('gform_after_submission', 'create_coupon_gf_blog', 10, 2);
+//replace ID for the id of the form that is connected with HS
+add_action('gform_pre_submission_14', 'create_coupon_gf_blog', 10, 2);
 
 function create_coupon_gf_blog($entry, $form){
 	
@@ -98,42 +107,17 @@ function create_coupon_gf_blog($entry, $form){
     $customers_to_search = array();
 	$filters_properties = array();
     $customer_to_update = array();
-	$myhstoken = 'myTokenHS';
+	$myhstoken = 'Bearer pat-eu1-ddaee549-24a1-4d0c-9410-9211e41252ed';
 
     //calculate dates. Start today adding more days using arg.
-    $startdt = date('d/m/y');
-    $endDt = date('d/m/y', strtotime(date('Y-m-d H:i:s')) + (7 * 60 * 60 * 24));
-
-    array_push($filters_properties, array('propertyName'=>'email', 'operator'=>'EQ', 'value'=>rgar($entry,'1')));
-	array_push($customers_to_search, array('filters'=>$filters_properties));
+    $startdt = date('Y-m-d');
+    $endDt = date('Y-m-d', strtotime(date('Y-m-d H:i:s')) + (7 * 60 * 60 * 24));
 	
+	$couponnew = substr(md5(uniqid(mt_rand(), true)) , 0, 8);
 	
-	
-	$args = array('timeout'=> 45,'redirection' => 5, 
-								    'headers'=> array('authorization' => $myhstoken,
-													   'content-type'=> 'application/json'),
-								    'body'=> json_encode(array('filterGroups'=>$customers_to_search))
-								);
-		
-	//insert code in HB
-	$response = wp_remote_post($url, $args);
-    
-	
-	$body = wp_remote_retrieve_body( $response );
-   	$data = json_decode( $body );
-	
-	if($data->total > 0){
-		
-		foreach( $data->results as $contact ) {
-			
-			$id = $contact->id;
-			echo $id;
-			
-			$couponnew = substr(md5(uniqid(mt_rand(), true)) , 0, 8);
-		
-			$meta = array(
+				$meta = array(
 					'gravityForm' => 24,
-					'couponName' => 'test101',
+					'couponName' => 'test203',
 					'couponCode' => $couponnew,
 					'couponAmountType' => 'percentage',
 					'couponAmount'=> 1,
@@ -141,32 +125,12 @@ function create_coupon_gf_blog($entry, $form){
 					'endDate'     => $endDt,
 					'usageLimit'  => '1',
 					'isStackable' => false,
-					'usageCount'  => 1,
+					'usageCount'  => 0,
 				);
 		
 			$form_id = $meta['form_id'] ? $meta['form_id'] : 0;
 			gf_coupons()->insert_feed($form_id, true, $meta);
-		
-			array_push($customer_to_update, array('id'=>$id, 'properties'=>array('coupon'=>$couponnew)));
 
-			
-		}
-	}
 	
-	$args = array('timeout'=> 45,'redirection' => 5, 
-								    'headers'     => array('authorization' => $myhstoken,
-													   'content-type'=> 'application/json'),
-								    'body'        => json_encode(array('inputs'=>$customer_to_update))
-								);
-	
-	//insert code in HB
-	$res = wp_remote_post($url_update, $args);
-		
-	// error check
-	if ( is_wp_error( $res ) ) {
-		$error_message = $res->get_error_message();
-		echo "Something went wrong: $error_message";
-	}
-	
+	$_POST['input_10'] = $couponnew;
 }
-?>

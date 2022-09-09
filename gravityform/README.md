@@ -22,7 +22,7 @@ Paste this function on your function.php on your theme Wordpress. Function creat
     "gfnumber": 23,
     "limit_query": 100,
     "filter_properties": "lifecyclestage", 
-    "cupon": "cupon_nutricion"
+    "coupon": "cupon_nutricion"
 }]
 ```
 
