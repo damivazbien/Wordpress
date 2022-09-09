@@ -132,5 +132,19 @@ function create_coupon_gf_blog($entry, $form){
 			gf_coupons()->insert_feed($form_id, true, $meta);
 
 	
+<<<<<<< HEAD
 	$_POST['input_10'] = $couponnew;
 }
+=======
+	//insert code in HB
+	$res = wp_remote_post($url_update, $args);
+		
+	// error check
+	if ( is_wp_error( $res ) ) {
+		$error_message = $res->get_error_message();
+		echo "Something went wrong: $error_message";
+	}
+	
+}
+?>
+>>>>>>> 465a6175c3231f9f043c0ca369b0ff6e90ba9f26
