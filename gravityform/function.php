@@ -97,7 +97,7 @@ function create_coupon_gf($arg=array()){
 
 //after send a form, create coupon
 //replace ID for the id of the form that is connected with HS
-add_action('gform_pre_submission_14', 'create_coupon_gf_blog', 10, 2);
+add_action('gform_pre_submission_ID', 'create_coupon_gf_blog', 10, 2);
 
 function create_coupon_gf_blog($entry, $form){
 	
